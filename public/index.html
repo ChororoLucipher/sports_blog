@@ -1,20 +1,855 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Full Stack Node App</title>
-</head>
-<body>
-<h1>Welcome to My Full-Stack Website</h1>
-<button id="btn">Check Server Status</button>
-<p id="output"></p>
-<script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GAME ON — Sports Blog</title>
 
-document.getElementById('btn').addEventListener('click', async () => {
-const res = await fetch('/api/health');
-const data = await res.json();
-document.getElementById('output').innerText = data.status;
-});
-</script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --navy: #071727;
+      --navy-2: #0c2032;
+      --red: #df211f;
+      --red-dark: #bb1717;
+      --white: #ffffff;
+      --text: #111820;
+      --muted: #66707a;
+      --line: #e4e7ea;
+      --light: #f7f8fa;
+      --max: 1440px;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: var(--white);
+      line-height: 1.5;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      object-fit: cover;
+    }
+
+    /* ---------- TOP BAR ---------- */
+
+    .topbar {
+      height: 42px;
+      background: var(--navy);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 42px;
+      font-size: 14px;
+    }
+
+    .top-social {
+      display: flex;
+      gap: 20px;
+      font-weight: 700;
+    }
+
+    /* ---------- MAIN HEADER ---------- */
+
+    .header {
+      height: 88px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 42px;
+      border-bottom: 1px solid #e9ebee;
+      background: white;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      min-width: 240px;
+    }
+
+    .logo-mark {
+      width: 58px;
+      height: 48px;
+      position: relative;
+      margin-right: 10px;
+    }
+
+    .logo-mark::before {
+      content: "";
+      position: absolute;
+      width: 45px;
+      height: 12px;
+      background: var(--red);
+      transform: rotate(-42deg);
+      top: 11px;
+      left: 3px;
+      border-radius: 8px;
+    }
+
+    .logo-mark::after {
+      content: "";
+      position: absolute;
+      width: 39px;
+      height: 9px;
+      background: #111820;
+      transform: rotate(35deg);
+      top: 29px;
+      left: 8px;
+      border-radius: 8px;
+    }
+
+    .logo-text {
+      font-size: 29px;
+      font-weight: 900;
+      letter-spacing: -1.5px;
+    }
+
+    .logo-text span {
+      color: var(--red);
+    }
+
+    .logo-sub {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 4px;
+      font-weight: 700;
+      margin-top: -4px;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 38px;
+      height: 100%;
+    }
+
+    .nav a {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      position: relative;
+      font-size: 14px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .nav a:hover,
+    .nav a.active {
+      color: var(--red);
+    }
+
+    .nav a.active::after {
+      content: "";
+      position: absolute;
+      bottom: 18px;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--red);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      min-width: 200px;
+      justify-content: flex-end;
+    }
+
+    .search {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--navy);
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .search::after {
+      content: "";
+      position: absolute;
+      width: 8px;
+      height: 2px;
+      background: var(--navy);
+      right: -6px;
+      bottom: -3px;
+      transform: rotate(45deg);
+    }
+
+    .subscribe {
+      background: var(--red);
+      color: white;
+      padding: 12px 25px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .subscribe:hover {
+      background: var(--red-dark);
+    }
+
+    /* ---------- HERO ---------- */
+
+    .hero {
+      min-height: 410px;
+      background: var(--navy);
+      display: grid;
+      grid-template-columns: 42% 38% 20%;
+      color: white;
+    }
+
+    .hero-image {
+      min-height: 410px;
+      background:
+        linear-gradient(90deg, rgba(7,23,39,.05), rgba(7,23,39,.35)),
+        url("https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=1400&q=85")
+        center/cover no-repeat;
+    }
+
+    .hero-content {
+      padding: 62px 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .featured {
+      color: #ff302d;
+      font-size: 13px;
+      font-weight: 900;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      font-size: 49px;
+      line-height: 1.05;
+      letter-spacing: -2px;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      color: #d9e0e6;
+      font-size: 16px;
+      max-width: 450px;
+      margin-bottom: 28px;
+    }
+
+    .read-more {
+      width: fit-content;
+      background: var(--red);
+      color: white;
+      padding: 13px 22px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .read-more:hover {
+      background: var(--red-dark);
+    }
+
+    .hero-list {
+      padding: 34px 30px;
+      background: rgba(255,255,255,.025);
+      border-left: 1px solid rgba(255,255,255,.08);
+    }
+
+    .story {
+      padding: 0 0 24px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid rgba(255,255,255,.16);
+      display: grid;
+      grid-template-columns: 55px 1fr;
+      gap: 14px;
+    }
+
+    .story:last-child {
+      border-bottom: 0;
+    }
+
+    .story-number {
+      color: #7c8995;
+      font-size: 29px;
+      font-weight: 900;
+    }
+
+    .story:first-child .story-number {
+      color: var(--red);
+    }
+
+    .story-title {
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .story-date {
+      color: #87939e;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    /* ---------- CONTENT ---------- */
+
+    .content {
+      max-width: var(--max);
+      margin: auto;
+      padding: 28px 42px 35px;
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(280px, 1.05fr);
+      gap: 70px;
+    }
+
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 19px;
+      font-weight: 900;
+      position: relative;
+      padding-left: 15px;
+    }
+
+    .section-title::before {
+      content: "";
+      width: 5px;
+      height: 19px;
+      position: absolute;
+      left: 0;
+      top: 1px;
+      background: var(--red);
+    }
+
+    .view-all {
+      color: var(--red);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .posts {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      overflow: hidden;
+      background: white;
+      transition: .25s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0,0,0,.09);
+    }
+
+    .card-image {
+      height: 175px;
+    }
+
+    .card-body {
+      padding: 15px 16px 17px;
+    }
+
+    .tag {
+      display: inline-block;
+      background: var(--red);
+      color: white;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 4px 8px;
+      border-radius: 2px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .card h3 {
+      font-size: 19px;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .meta {
+      display: flex;
+      gap: 18px;
+      color: #69747e;
+      font-size: 12px;
+    }
+
+    /* ---------- SIDEBAR ---------- */
+
+    .sidebar-title {
+      font-size: 19px;
+      font-weight: 900;
+      position: relative;
+      padding-left: 15px;
+      margin-bottom: 16px;
+    }
+
+    .sidebar-title::before {
+      content: "";
+      width: 5px;
+      height: 19px;
+      position: absolute;
+      left: 0;
+      top: 1px;
+      background: var(--red);
+    }
+
+    .social-follow {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 27px;
+    }
+
+    .social-box {
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      text-align: center;
+      padding: 10px 4px;
+    }
+
+    .social-icon {
+      width: 31px;
+      height: 31px;
+      border-radius: 50%;
+      margin: 0 auto 7px;
+      display: grid;
+      place-items: center;
+      background: var(--navy);
+      color: white;
+      font-weight: 900;
+      font-size: 13px;
+    }
+
+    .social-box strong {
+      display: block;
+      font-size: 16px;
+    }
+
+    .social-box small {
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .popular {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 13px;
+    }
+
+    .popular img {
+      width: 105px;
+      height: 66px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .popular h4 {
+      font-size: 13px;
+      line-height: 1.35;
+      margin-bottom: 5px;
+    }
+
+    .popular span {
+      color: #8a949d;
+      font-size: 11px;
+    }
+
+    /* ---------- FOOTER ---------- */
+
+    .footer {
+      background: var(--navy);
+      color: white;
+      padding: 22px 42px;
+    }
+
+    .footer-inner {
+      max-width: var(--max);
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1.15fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .quote {
+      display: flex;
+      gap: 17px;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .quote-mark {
+      color: var(--red);
+      font-size: 42px;
+      font-weight: 900;
+    }
+
+    .quote small {
+      display: block;
+      color: #b5bec7;
+      margin-top: 5px;
+    }
+
+    .newsletter {
+      border-left: 1px solid rgba(255,255,255,.18);
+      padding-left: 40px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      font-size: 13px;
+    }
+
+    .mail-icon {
+      font-size: 29px;
+    }
+
+    .subscribe-form {
+      display: flex;
+      gap: 0;
+    }
+
+    .subscribe-form input {
+      width: 270px;
+      border: 0;
+      outline: 0;
+      padding: 12px;
+      border-radius: 4px 0 0 4px;
+    }
+
+    .subscribe-form button {
+      border: 0;
+      background: var(--red);
+      color: white;
+      font-weight: 900;
+      padding: 0 20px;
+      border-radius: 0 4px 4px 0;
+      cursor: pointer;
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+
+    @media (max-width: 1200px) {
+      .nav {
+        gap: 20px;
+      }
+
+      .header {
+        padding: 0 25px;
+      }
+
+      .topbar {
+        padding: 0 25px;
+      }
+
+      .content {
+        padding-left: 25px;
+        padding-right: 25px;
+        gap: 35px;
+      }
+
+      .hero h1 {
+        font-size: 40px;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .nav {
+        display: none;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-image {
+        height: 350px;
+      }
+
+      .hero-list {
+        display: none;
+      }
+
+      .content {
+        grid-template-columns: 1fr;
+      }
+
+      .posts {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .footer-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .newsletter {
+        border-left: 0;
+        padding-left: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div>Live for the Game. Write for the Fans.</div>
+    <div class="top-social">
+      <span>f</span>
+      <span>𝕏</span>
+      <span>◎</span>
+      <span>▶</span>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="header">
+
+    <a href="#" class="logo">
+      <div class="logo-mark"></div>
+      <div>
+        <div class="logo-text">GAME <span>ON</span></div>
+        <span class="logo-sub">SPORTS BLOG</span>
+      </div>
+    </a>
+
+    <nav class="nav">
+      <a href="#" class="active">HOME</a>
+      <a href="#">FOOTBALL</a>
+      <a href="#">BASKETBALL</a>
+      <a href="#">VOLLEYBALL</a>
+      <a href="#">MMA</a>
+      <a href="#">OTHER SPORTS</a>
+      <a href="#">OPINION</a>
+      <a href="#">ABOUT</a>
+    </nav>
+
+    <div class="header-actions">
+      <div class="search"></div>
+      <a href="#" class="subscribe">SUBSCRIBE</a>
+    </div>
+
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+
+    <div class="hero-image"></div>
+
+    <div class="hero-content">
+      <div class="featured">Featured</div>
+      <h1>Play Hard.<br>Dream Big.<br>Win Together.</h1>
+      <p>The latest stories, scores, and insights from the world of sports.</p>
+      <a href="#" class="read-more">Read Full Story &nbsp; →</a>
+    </div>
+
+    <div class="hero-list">
+
+      <div class="story">
+        <div class="story-number">01</div>
+        <div>
+          <div class="story-title">Championship Mindset: What It Takes to Be the Best</div>
+          <div class="story-date">May 17, 2024</div>
+        </div>
+      </div>
+
+      <div class="story">
+        <div class="story-number">02</div>
+        <div>
+          <div class="story-title">Rising Stars to Watch This Season</div>
+          <div class="story-date">May 16, 2024</div>
+        </div>
+      </div>
+
+      <div class="story">
+        <div class="story-number">03</div>
+        <div>
+          <div class="story-title">Game Recap: A Night to Remember</div>
+          <div class="story-date">May 15, 2024</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- MAIN CONTENT -->
+  <main class="content">
+
+    <section>
+      <div class="section-heading">
+        <h2 class="section-title">LATEST POSTS</h2>
+        <a href="#" class="view-all">VIEW ALL POSTS →</a>
+      </div>
+
+      <div class="posts">
+
+        <!-- FOOTBALL -->
+        <article class="card">
+          <img class="card-image"
+            src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=900&q=85"
+            alt="Football match">
+          <div class="card-body">
+            <span class="tag">Football</span>
+            <h3>UCL Final Preview: Teams, Keys, and Predictions</h3>
+            <p>A deep dive into the biggest club match of the season.</p>
+            <div class="meta">
+              <span>◷ May 17, 2024</span>
+              <span>◯ 12</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- BASKETBALL -->
+        <article class="card">
+          <img class="card-image"
+            src="https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=900&q=85"
+            alt="Basketball player">
+          <div class="card-body">
+            <span class="tag">Basketball</span>
+            <h3>NBA Playoffs Heat Up: Top Moments So Far</h3>
+            <p>The best plays, biggest comebacks, and what's next.</p>
+            <div class="meta">
+              <span>◷ May 16, 2024</span>
+              <span>◯ 8</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- MMA -->
+        <article class="card">
+          <img class="card-image"
+            src="https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?auto=format&fit=crop&w=900&q=85"
+            alt="MMA fighters">
+          <div class="card-body">
+            <span class="tag">MMA</span>
+            <h3>The Comeback Kings: Fighters Who Defied the Odds</h3>
+            <p>These warriors proved that it's not over until it's over.</p>
+            <div class="meta">
+              <span>◷ May 15, 2024</span>
+              <span>◯ 15</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+      <h2 class="sidebar-title">FOLLOW US</h2>
+
+      <div class="social-follow">
+        <div class="social-box">
+          <div class="social-icon">f</div>
+          <strong>21K</strong>
+          <small>Followers</small>
+        </div>
+
+        <div class="social-box">
+          <div class="social-icon">𝕏</div>
+          <strong>15K</strong>
+          <small>Followers</small>
+        </div>
+
+        <div class="social-box">
+          <div class="social-icon">◎</div>
+          <strong>18K</strong>
+          <small>Followers</small>
+        </div>
+
+        <div class="social-box">
+          <div class="social-icon">▶</div>
+          <strong>25K</strong>
+          <small>Subscribers</small>
+        </div>
+      </div>
+
+      <h2 class="sidebar-title">POPULAR POSTS</h2>
+
+      <div class="popular">
+        <img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=400&q=80" alt="Football">
+        <div>
+          <h4>Top 10 Goals of the Season</h4>
+          <span>May 14, 2024</span>
+        </div>
+      </div>
+
+      <div class="popular">
+        <img src="https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=400&q=80" alt="Basketball">
+        <div>
+          <h4>Why Team Chemistry Wins Championships</h4>
+          <span>May 13, 2024</span>
+        </div>
+      </div>
+
+      <div class="popular">
+        <img src="https://images.unsplash.com/photo-1592656670411-1e9a3b1f1f0d?auto=format&fit=crop&w=400&q=80" alt="Volleyball">
+        <div>
+          <h4>Volleyball Basics: Tips for Beginners</h4>
+          <span>May 12, 2024</span>
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+
+      <div class="quote">
+        <div class="quote-mark">“</div>
+        <div>
+          It's not whether you get knocked down, it's whether you get up.
+          <small>– Vince Lombardi</small>
+        </div>
+      </div>
+
+      <div class="newsletter">
+        <div class="mail-icon">✉</div>
+        <div>
+          Join our community! Get the latest updates and stories delivered straight to your inbox.
+        </div>
+      </div>
+
+      <form class="subscribe-form">
+        <input type="email" placeholder="Your email address">
+        <button type="submit">SUBSCRIBE</button>
+      </form>
+
+    </div>
+  </footer>
+
 </body>
 </html>
